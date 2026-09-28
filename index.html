@@ -151,132 +151,50 @@ h1 {
 
 <script>
 
-const questions = [
-
-{
- picture: "🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎",
- story: "Lina mempunyai 12 apel. Ia memberikan 5 apel kepada temannya.",
- question: "Berapa apel Lina sekarang?",
- answers: ["6", "7", "8"],
- correct: "7"
-},
-
-{
- picture: "🍪🍪🍪🍪🍪🍪🍪🍪",
- story: "Budi mempunyai 15 kue. Ia memberikan 6 kue kepada adiknya.",
- question: "Berapa kue Budi yang tersisa?",
- answers: ["8", "9", "10"],
- correct: "9"
-},
-
-{
- picture: "🎈🎈🎈🎈🎈🎈🎈🎈🎈",
- story: "Rina mempunyai 14 balon. Sebanyak 5 balon pecah.",
- question: "Berapa balon Rina sekarang?",
- answers: ["8", "9", "10"],
- correct: "9"
-},
-
-{
- picture: "🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟",
- story: "Doni mempunyai 17 ikan. Ia memberikan 8 ikan kepada ayahnya.",
- question: "Berapa ikan Doni yang tersisa?",
- answers: ["8", "9", "10"],
- correct: "9"
-},
-
-{
- picture: "🍊🍊🍊🍊🍊🍊🍊🍊🍊🍊🍊🍊",
- story: "Siti mempunyai 18 jeruk. Ia memberikan 7 jeruk kepada ibunya.",
- question: "Berapa jeruk Siti sekarang?",
- answers: ["10", "11", "12"],
- correct: "11"
-},
-
-{
- picture: "🧸🧸🧸🧸🧸🧸🧸🧸🧸",
- story: "Tono mempunyai 13 boneka. Ia memberikan 4 boneka kepada sepupunya.",
- question: "Berapa boneka Tono yang tersisa?",
- answers: ["8", "9", "10"],
- correct: "9"
-},
-
-{
- picture: "🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸",
- story: "Maya mempunyai 16 bunga. Ia memberikan 9 bunga kepada gurunya.",
- question: "Berapa bunga Maya sekarang?",
- answers: ["6", "7", "8"],
- correct: "7"
-},
-
-{
- picture: "🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭",
- story: "Andi mempunyai 20 mangga. Ia memberikan 8 mangga kepada tetangganya.",
- question: "Berapa mangga Andi yang tersisa?",
- answers: ["11", "12", "13"],
- correct: "12"
-},
-
-{
- picture: "✏️✏️✏️✏️✏️✏️✏️✏️✏️✏️✏️",
- story: "Rara mempunyai 19 pensil. Ia memberikan 7 pensil kepada teman-temannya.",
- question: "Berapa pensil Rara sekarang?",
- answers: ["11", "12", "13"],
- correct: "12"
-},
-
-{
- picture: "⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐",
- story: "Fani mempunyai 20 bintang. Ia menghapus 9 bintang.",
- question: "Berapa bintang yang tersisa?",
- answers: ["10", "11", "12"],
- correct: "11"
-}
-
-];
-
-let current = 0;let current = 0;
+let current = 0;
 let score = 0;
-let sudahMenjawab = false;
+let answered = false;
 
 function loadQuestion() {
 
-  const q = questions[current];
-
-  sudahMenjawab = false;
+  let q = questions[current];
 
   document.getElementById("progress").innerText =
     "Soal " + (current + 1) + " dari " + questions.length;
 
-  document.getElementById("picture").innerText = q.picture;
+  document.getElementById("picture").innerText =
+    q.picture;
 
-  document.getElementById("story").innerText = q.story;
+  document.getElementById("story").innerText =
+    q.story;
 
-  document.getElementById("question").innerText = q.question;
+  document.getElementById("question").innerText =
+    q.question;
 
   document.getElementById("feedback").innerText = "";
 
-  const nextButton = document.getElementById("next");
-  nextButton.style.display = "none";
+  document.getElementById("next").style.display = "none";
 
-  const answers = document.getElementById("answers");
-  answers.innerHTML = "";
+  answered = false;
 
-  q.answers.forEach(function(answer) {
+  let box = document.getElementById("answers");
 
-    const button = document.createElement("button");
+  box.innerHTML = "";
+
+  for (let i = 0; i < q.answers.length; i++) {
+
+    let button = document.createElement("button");
 
     button.className = "answer";
 
-    button.innerText = answer;
+    button.innerText = q.answers[i];
 
     button.onclick = function() {
-      checkAnswer(answer);
+      checkAnswer(q.answers[i]);
     };
 
-    answers.appendChild(button);
-
-  });
+    box.appendChild(button);
+  }
 }
 
 
@@ -284,44 +202,45 @@ function speak(text) {
 
   if ("speechSynthesis" in window) {
 
-    const speech = new SpeechSynthesisUtterance(text);
+    let suara = new SpeechSynthesisUtterance(text);
 
-    speech.lang = "id-ID";
-    speech.rate = 0.9;
+    suara.lang = "id-ID";
+    suara.rate = 0.9;
 
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(speech);
-
+    speechSynthesis.cancel();
+    speechSynthesis.speak(suara);
   }
-
 }
 
 
 function checkAnswer(answer) {
 
-  if (sudahMenjawab) return;
+  if (answered) {
+    return;
+  }
 
-  const q = questions[current];
+  let q = questions[current];
 
-  if (answer === q.correct) {
+  if (answer == q.correct) {
 
-    sudahMenjawab = true;
+    answered = true;
 
-    score++;
+    score = score + 1;
 
     document.getElementById("feedback").innerText =
       "🎉 Hebat! Jawabanmu benar! ⭐";
 
     speak("Hebat! Jawabanmu benar!");
 
-    const buttons =
+    document.getElementById("next").style.display =
+      "block";
+
+    let buttons =
       document.querySelectorAll("#answers button");
 
     buttons.forEach(function(button) {
       button.disabled = true;
     });
-
-    document.getElementById("next").style.display = "block";
 
   } else {
 
@@ -329,9 +248,7 @@ function checkAnswer(answer) {
       "🌸 Belum tepat. Coba lagi!";
 
     speak("Belum tepat. Coba lagi!");
-
   }
-
 }
 
 
@@ -346,76 +263,64 @@ function nextQuestion() {
   } else {
 
     showResult();
-
   }
-
 }
 
 
 function showResult() {
 
-  let stars = "";
+  let pesan = "";
 
-  if (score === 10) {
-    stars = "⭐⭐⭐⭐⭐";
+  if (score == 10) {
+
+    pesan = "🌟 Luar biasa! Semua benar!";
+
   } else if (score >= 8) {
-    stars = "⭐⭐⭐⭐";
+
+    pesan = "🎉 Hebat sekali!";
+
   } else if (score >= 6) {
-    stars = "⭐⭐⭐";
-  } else if (score >= 4) {
-    stars = "⭐⭐";
+
+    pesan = "👏 Bagus! Ayo latihan lagi!";
+
   } else {
-    stars = "⭐";
+
+    pesan = "💪 Tetap semangat! Kamu pasti bisa!";
   }
 
-  document.querySelector(".game").innerHTML = `
 
-    <h1>🏆 Misi Selesai! 🏆</h1>
+  document.querySelector(".game").innerHTML =
 
-    <div class="identity">
-      <b>Mem Dela</b><br>
-      Kelas 2<br>
-      SD Negeri 71 Maluku Tengah
-    </div>
+    "<h1>🏆 Misi Selesai! 🏆</h1>" +
 
-    <div class="stars">
-      ${stars}
-    </div>
+    "<div class='identity'>" +
+    "<b>Mem Dela</b><br>" +
+    "Kelas 2<br>" +
+    "SD Negeri 71 Maluku Tengah" +
+    "</div>" +
 
-    <p style="font-size:25px;">
-      Skormu
-    </p>
+    "<div class='stars'>⭐⭐⭐⭐⭐</div>" +
 
-    <div class="final-score">
-      ${score} / 10
-    </div>
+    "<p style='font-size:25px;'>Skormu</p>" +
 
-    <p style="font-size:24px;">
-      ${
-        score === 10
-        ? "🌟 Luar biasa! Semua benar!"
-        : score >= 8
-        ? "🎉 Hebat sekali!"
-        : score >= 6
-        ? "👏 Bagus! Ayo latihan lagi!"
-        : "💪 Tetap semangat! Kamu pasti bisa!"
-      }
-    </p>
+    "<div class='final-score'>" +
+    score + " / 10" +
+    "</div>" +
 
-    <button
-      class="answer restart"
-      onclick="location.reload()">
-      🔄 Main Lagi
-    </button>
+    "<p style='font-size:24px;'>" +
+    pesan +
+    "</p>" +
 
-  `;
+    "<button class='answer restart' " +
+    "onclick='location.reload()'>" +
+    "🔄 Main Lagi" +
+    "</button>";
 
   speak(
     "Permainan selesai. Skormu " +
     score +
     " dari 10."
   );
-
 }
 
 
