@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Misi Pengurangan - Mem Dela</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #dff9fb, #fff3b0);
+  text-align: center;
+  margin: 0;
+  padding: 15px;
+}
+
+.game {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 28px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.2);
+}
+
+h1 {
+  color: #ff6b35;
+  font-size: 32px;
+  margin-bottom: 5px;
+}
+
+.identity {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.progress {
+  font-size: 20px;
+  font-weight: bold;
+  color: #6c5ce7;
+}
+
+.picture {
+  font-size: 70px;
+  margin: 15px;
+  min-height: 80px;
+}
+
+.story {
+  font-size: 21px;
+  line-height: 1.5;
+  min-height: 90px;
+}
+
+.question {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 18px;
+  color: #2d3436;
+}
+
+.answer {
+  display: block;
+  width: 85%;
+  margin: 12px auto;
+  padding: 15px;
+  font-size: 24px;
+  border: none;
+  border-radius: 18px;
+  background: #74b9ff;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0984e3;
+}
+
+.answer:hover {
+  transform: scale(1.03);
+}
+
+.answer:disabled {
+  cursor: default;
+  opacity: .8;
+}
+
+#feedback {
+  font-size: 25px;
+  font-weight: bold;
+  min-height: 45px;
+  margin: 12px;
+}
+
+#next {
+  display: none;
+  background: #55efc4;
+  color: #145a32;
+  box-shadow: 0 4px 0 #00b894;
+}
+
+.stars {
+  font-size: 45px;
+  margin: 10px;
+}
+
+.final-score {
+  font-size: 55px;
+  font-weight: bold;
+  color: #ff7675;
+}
+
+.restart {
+  background: #a29bfe;
+  box-shadow: 0 4px 0 #6c5ce7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+  <h1>🚀 Misi Pengurangan 🚀</h1>
+
+  <div class="identity">
+    <b>Mem Dela</b><br>
+    Kelas 2<br>
+    SD Negeri 71 Maluku Tengah
+  </div>
+
+  <div class="progress" id="progress">
+    Soal 1 dari 10
+  </div>
+
+  <div class="picture" id="picture"></div>
+
+  <div class="story" id="story"></div>
+
+  <div class="question" id="question"></div>
+
+  <div id="answers"></div>
+
+  <div id="feedback"></div>
+
+  <button class="answer" id="next" onclick="nextQuestion()">
+    ➡️ Soal Berikutnya
+  </button>
+
+</div>
+
+
+<script>
+
+const questions = [
+
+{
+ picture: "🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎",
+ story: "Lina mempunyai 12 apel. Ia memberikan 5 apel kepada temannya.",
+ question: "Berapa apel Lina sekarang?",
+ answers: ["6", "7", "8"],
+ correct: "7"
+},
+
+{
+ picture: "🍪🍪🍪🍪🍪🍪🍪🍪",
+ story: "Budi mempunyai 15 kue. Ia memberikan 6 kue kepada adiknya.",
+ question: "Berapa kue Budi yang tersisa?",
+ answers: ["8", "9", "10"],
+ correct: "9"
+},
+
+{
+ picture: "🎈🎈🎈🎈🎈🎈🎈🎈🎈",
+ story: "Rina mempunyai 14 balon. Sebanyak 5 balon pecah.",
+ question: "Berapa balon Rina sekarang?",
+ answers: ["8", "9", "10"],
+ correct: "9"
+},
+
+{
+ picture: "🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟",
+ story: "Doni mempunyai 17 ikan. Ia memberikan 8 ikan kepada ayahnya.",
+ question: "Berapa ikan Doni yang tersisa?",
+ answers: ["8", "9", "10"],
+ correct: "9"
+},
+
+{
+ picture: "🍊🍊🍊🍊🍊🍊🍊🍊🍊🍊🍊🍊",
+ story: "Siti mempunyai 18 jeruk. Ia memberikan 7 jeruk kepada ibunya.",
+ question: "Berapa jeruk Siti sekarang?",
+ answers: ["10", "11", "12"],
+ correct: "11"
+},
+
+{
+ picture: "🧸🧸🧸🧸🧸🧸🧸🧸🧸",
+ story: "Tono mempunyai 13 boneka. Ia memberikan 4 boneka kepada sepupunya.",
+ question: "Berapa boneka Tono yang tersisa?",
+ answers: ["8", "9", "10"],
+ correct: "9"
+},
+
+{
+ picture: "🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸",
+ story: "Maya mempunyai 16 bunga. Ia memberikan 9 bunga kepada gurunya.",
+ question: "Berapa bunga Maya sekarang?",
+ answers: ["6", "7", "8"],
+ correct: "7"
+},
+
+{
+ picture: "🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭🥭",
+ story: "Andi mempunyai 20 mangga. Ia memberikan 8 mangga kepada tetangganya.",
+ question: "Berapa mangga Andi yang tersisa?",
+ answers: ["11", "12", "13"],
+ correct: "12"
+},
+
+{
+ picture: "✏️✏️✏️✏️✏️✏️✏️✏️✏️✏️✏️",
+ story: "Rara mempunyai 19 pensil. Ia memberikan 7 pensil kepada teman-temannya.",
+ question: "Berapa pensil Rara sekarang?",
+ answers: ["11", "12", "13"],
+ correct: "12"
+},
+
+{
+ picture: "⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐",
+ story: "Fani mempunyai 20 bintang. Ia menghapus 9 bintang.",
+ question: "Berapa bintang yang tersisa?",
+ answers: ["10", "11", "12"],
+ correct: "11"
+}
+
+];
+
+let current = 0;
+let score = 0;
+let sudahMenjawab = false;
+
+
+function loadQuestion() {
+
+  const q = questions[current];
+
+  sudahMenjawab = false;
+
+  document.getElementById("progress").innerText =
+    "Soal " + (current + 1) + " dari " + questions.length;
+
+  document.getElementById("picture").innerText =
+    q.picture;
+
+  document.getElementById("story").innerText =
+    q.story;
+
+  document.getElementById("question").innerText =
+    q.question;
+
+  document.getElementById("feedback").innerText = "";
+
+  document.getElementById("next").style.display = "none";
+
+  const answers = document.getElementById("answers");
+
+  answers.innerHTML = "";
+
+  q.answers.forEach(answer => {
+
+    const button = document.createElement("button");
+
+    button.className = "answer";
+
+    button.innerText = answer;
+
+    button.onclick = () => checkAnswer(answer, button);
+
+    answers.appendChild(button);
+
+  });
+}
+
+
+function speak(text) {
+
+  const speech = new SpeechSynthesisUtterance(text);
+
+  speech.lang = "id-ID";
+
+  speech.rate = 0.9;
+
+  speech.pitch = 1.1;
+
+  speechSynthesis.cancel();
+
+  speechSynthesis.speak(speech);
+}
+
+
+function checkAnswer(answer, clickedButton) {
+
+  if (sudahMenjawab) return;
+
+  const q = questions[current];
+
+  if (answer === q.correct) {
+
+    sudahMenjawab = true;
+
+    score++;
+
+    document.getElementById("feedback").innerText =
+      "🎉 Hebat! Jawabanmu benar! ⭐";
+
+    speak("Hebat! Jawabanmu benar!");
+
+    document.querySelectorAll(".answer")
+      .forEach(button => button.disabled = true);
+
+    document.getElementById("next").style.display = "block";
+
+  } else {
+
+    document.getElementById("feedback").innerText =
+      "🌸 Belum tepat. Coba lagi!";
+
+    speak("Belum tepat. Coba lagi!");
+
+    clickedButton.disabled = true;
+  }
+}
+
+
+function nextQuestion() {
+
+  current++;
+
+  if (current < questions.length) {
+
+    loadQuestion();
+
+  } else {
+
+    showResult();
+
+  }
+}
+
+
+function showResult() {
+
+  let stars = "";
+
+  if (score === 10) {
+    stars = "⭐⭐⭐⭐⭐";
+  } else if (score >= 8) {
+    stars = "⭐⭐⭐⭐";
+  } else if (score >= 6) {
+    stars = "⭐⭐⭐";
+  } else if (score >= 4) {
+    stars = "⭐⭐";
+  } else {
+    stars = "⭐";
+  }
+
+  document.querySelector(".game").innerHTML = `
+
+    <h1>🏆 Misi Selesai! 🏆</h1>
+
+    <div class="identity">
+      <b>Mem Dela</b><br>
+      Kelas 2<br>
+      SD Negeri 71 Maluku Tengah
+    </div>
+
+    <div class="stars">
+      ${stars}
+    </div>
+
+    <p style="font-size:25px;">
+      Skormu
+    </p>
+
+    <div class="final-score">
+      ${score} / 10
+    </div>
+
+    <p style="font-size:24px;">
+      ${
+        score === 10
+        ? "🌟 Luar biasa! Semua benar!"
+        : score >= 8
+        ? "🎉 Hebat sekali! Terus pertahankan!"
+        : score >= 6
+        ? "👏 Bagus! Ayo latihan lagi!"
+        : "💪 Tetap semangat! Kamu pasti bisa!"
+      }
+    </p>
+
+    <button class="answer restart"
+      onclick="location.reload()">
+      🔄 Main Lagi
+    </button>
+
+  `;
+
+  speak(
+    "Permainan selesai. Skormu " +
+    score +
+    " dari 10."
+  );
+}
+
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
