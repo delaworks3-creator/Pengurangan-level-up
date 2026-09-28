@@ -235,10 +235,9 @@ const questions = [
 
 ];
 
-let current = 0;
+let current = 0;let current = 0;
 let score = 0;
 let sudahMenjawab = false;
-
 
 function loadQuestion() {
 
@@ -249,24 +248,21 @@ function loadQuestion() {
   document.getElementById("progress").innerText =
     "Soal " + (current + 1) + " dari " + questions.length;
 
-  document.getElementById("picture").innerText =
-    q.picture;
+  document.getElementById("picture").innerText = q.picture;
 
-  document.getElementById("story").innerText =
-    q.story;
+  document.getElementById("story").innerText = q.story;
 
-  document.getElementById("question").innerText =
-    q.question;
+  document.getElementById("question").innerText = q.question;
 
   document.getElementById("feedback").innerText = "";
 
-  document.getElementById("next").style.display = "none";
+  const nextButton = document.getElementById("next");
+  nextButton.style.display = "none";
 
   const answers = document.getElementById("answers");
-
   answers.innerHTML = "";
 
-  q.answers.forEach(answer => {
+  q.answers.forEach(function(answer) {
 
     const button = document.createElement("button");
 
@@ -274,7 +270,9 @@ function loadQuestion() {
 
     button.innerText = answer;
 
-    button.onclick = () => checkAnswer(answer, button);
+    button.onclick = function() {
+      checkAnswer(answer);
+    };
 
     answers.appendChild(button);
 
@@ -284,21 +282,22 @@ function loadQuestion() {
 
 function speak(text) {
 
-  const speech = new SpeechSynthesisUtterance(text);
+  if ("speechSynthesis" in window) {
 
-  speech.lang = "id-ID";
+    const speech = new SpeechSynthesisUtterance(text);
 
-  speech.rate = 0.9;
+    speech.lang = "id-ID";
+    speech.rate = 0.9;
 
-  speech.pitch = 1.1;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(speech);
 
-  speechSynthesis.cancel();
+  }
 
-  speechSynthesis.speak(speech);
 }
 
 
-function checkAnswer(answer, clickedButton) {
+function checkAnswer(answer) {
 
   if (sudahMenjawab) return;
 
@@ -315,8 +314,12 @@ function checkAnswer(answer, clickedButton) {
 
     speak("Hebat! Jawabanmu benar!");
 
-    document.querySelectorAll(".answer")
-      .forEach(button => button.disabled = true);
+    const buttons =
+      document.querySelectorAll("#answers button");
+
+    buttons.forEach(function(button) {
+      button.disabled = true;
+    });
 
     document.getElementById("next").style.display = "block";
 
@@ -327,14 +330,14 @@ function checkAnswer(answer, clickedButton) {
 
     speak("Belum tepat. Coba lagi!");
 
-    clickedButton.disabled = true;
   }
+
 }
 
 
 function nextQuestion() {
 
-  current++;
+  current = current + 1;
 
   if (current < questions.length) {
 
@@ -345,6 +348,7 @@ function nextQuestion() {
     showResult();
 
   }
+
 }
 
 
@@ -391,14 +395,15 @@ function showResult() {
         score === 10
         ? "🌟 Luar biasa! Semua benar!"
         : score >= 8
-        ? "🎉 Hebat sekali! Terus pertahankan!"
+        ? "🎉 Hebat sekali!"
         : score >= 6
         ? "👏 Bagus! Ayo latihan lagi!"
         : "💪 Tetap semangat! Kamu pasti bisa!"
       }
     </p>
 
-    <button class="answer restart"
+    <button
+      class="answer restart"
       onclick="location.reload()">
       🔄 Main Lagi
     </button>
@@ -410,6 +415,7 @@ function showResult() {
     score +
     " dari 10."
   );
+
 }
 
 
